@@ -1,0 +1,31 @@
+﻿<Window x:Class="LevelEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LevelEditor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="1400">
+    <Grid>
+        <!--<Grid x:Name="tileGrid" HorizontalAlignment="Left" Height="750" Margin="682,10,0,0" VerticalAlignment="Top" Width="700"/>-->
+
+        <Grid Name="tileGrid" HorizontalAlignment="Left" Height="518" Margin="802,48,0,0" VerticalAlignment="Top" Width="536">
+            <Border BorderBrush="Black" BorderThickness="2"/>
+        </Grid>
+        <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" Maximum="20" Minimum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="836,656,0,0" VerticalAlignment="Top" Width="448"/>
+        <Button Content="New Level" HorizontalAlignment="Left" Height="60" Margin="48,48,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button Content="Load Level" HorizontalAlignment="Left" Height="60" Margin="304,48,0,0" VerticalAlignment="Top" Width="152"/>
+        <TextBox HorizontalAlignment="Left" Height="40" Margin="48,133,0,0" TextWrapping="Wrap" Text="fileName" VerticalAlignment="Top" Width="206"/>
+        <TextBox HorizontalAlignment="Left" Height="40" Margin="304,133,0,0" TextWrapping="Wrap" Text="filePath" VerticalAlignment="Top" Width="398"/>
+        <Label Content="Tile Types" FontSize="40" HorizontalAlignment="Left" Height="70" Margin="162,212,0,0" VerticalAlignment="Top" Width="204"/>
+        <Button Content="Open in Unity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="286,625,0,0" VerticalAlignment="Top" Width="348"/>
+        <Button Content="Save Level" HorizontalAlignment="Left" Height="60" Margin="48,642,0,0" VerticalAlignment="Top" Width="154"/>
+        <Label Content="Level Size" FontSize="25" HorizontalAlignment="Left" Height="40" Margin="1008,593,0,0" VerticalAlignment="Top" Width="124"/>
+
+
+        <!--<DataGrid x:Name="tileGrid" HorizontalAlignment="Left" Height="750" Margin="682,10,0,0" VerticalAlignment="Top" Width="700">
+            <Border BorderBrush="Black" BorderThickness="2"/>
+        </DataGrid>-->
+
+    </Grid>
+</Window>
