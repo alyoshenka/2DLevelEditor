@@ -6,26 +6,59 @@
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1400">
+    <Window.Resources>
+      <!--  <DataTemplate x:Key="selectionButton">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Width" Value="30"/>
+                        <Setter Property="Height" Value="30"/>
+                    </Style>
+                </StackPanel.Resources>
+                --><!--<Button Width="{Binding Path=Width}" />
+                <Button Height="{Binding Path=Height}" />--><!--
+            </StackPanel>
+        </DataTemplate>-->
+        <Style x:Key="selectionTile" TargetType="Button" >
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="BorderThickness" Value="10"/>
+            <EventSetter Event="Click" Handler="SelectTile"/>
+        </Style>
+        <Style x:Key="smallButton" TargetType="Button" >
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="60"/>
+            
+        </Style>
+
+    </Window.Resources>
     <Grid>
-        <!--<Grid x:Name="tileGrid" HorizontalAlignment="Left" Height="750" Margin="682,10,0,0" VerticalAlignment="Top" Width="700"/>-->
+            
 
         <Grid Name="tileGrid" HorizontalAlignment="Left" Height="518" Margin="802,48,0,0" VerticalAlignment="Top" Width="536">
             <Border BorderBrush="Black" BorderThickness="2"/>
         </Grid>
-        <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" Maximum="20" Minimum="10" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="836,656,0,0" VerticalAlignment="Top" Width="448"/>
-        <Button Content="New Level" HorizontalAlignment="Left" Height="60" Margin="48,48,0,0" VerticalAlignment="Top" Width="154"/>
-        <Button Content="Load Level" HorizontalAlignment="Left" Height="60" Margin="304,48,0,0" VerticalAlignment="Top" Width="152"/>
-        <TextBox HorizontalAlignment="Left" Height="40" Margin="48,133,0,0" TextWrapping="Wrap" Text="fileName" VerticalAlignment="Top" Width="206"/>
-        <TextBox HorizontalAlignment="Left" Height="40" Margin="304,133,0,0" TextWrapping="Wrap" Text="filePath" VerticalAlignment="Top" Width="398"/>
-        <Label Content="Tile Types" FontSize="40" HorizontalAlignment="Left" Height="70" Margin="162,212,0,0" VerticalAlignment="Top" Width="204"/>
-        <Button Content="Open in Unity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="286,625,0,0" VerticalAlignment="Top" Width="348"/>
-        <Button Content="Save Level" HorizontalAlignment="Left" Height="60" Margin="48,642,0,0" VerticalAlignment="Top" Width="154"/>
+            
+        <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="836,656,0,0" VerticalAlignment="Top" Width="448"/>
+        <Button Style="{StaticResource smallButton}" Click="SaveData" Content="Save Level" HorizontalAlignment="Left" Height="60" Margin="48,48,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button Style="{StaticResource smallButton}" Click="ClearData" Content="New Level" HorizontalAlignment="Left" Height="60" Margin="485,48,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button Style="{StaticResource smallButton}" Click="LoadData" Content="Load Level" HorizontalAlignment="Left" Height="60" Margin="273,48,0,0" VerticalAlignment="Top" Width="152"/>
+        <TextBox Name="saveText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="48,133,0,0" TextWrapping="Wrap" Text="fileName" VerticalAlignment="Top" Width="206"/>
+        <TextBox Name="loadText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="273,133,0,0" TextWrapping="Wrap" Text="filePath" VerticalAlignment="Top" Width="212"/>
+        <Label Content="Tile Types" FontSize="40" HorizontalAlignment="Left" Height="70" Margin="70,215,0,0" VerticalAlignment="Top" Width="204"/>
+        <Button Content="Open in Unity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="108,652,0,0" VerticalAlignment="Top" Width="348"/>
+
         <Label Content="Level Size" FontSize="25" HorizontalAlignment="Left" Height="40" Margin="1008,593,0,0" VerticalAlignment="Top" Width="124"/>
+        <Button Style="{StaticResource selectionTile}" Content="Player" Name="Player" Margin="70,320,0,0" BorderBrush="Blue" RenderTransformOrigin="0.625,-0.125"/>
+        <Button Style="{StaticResource selectionTile}" Content="Enemy"  Margin="235,320,0,0" BorderBrush="Red"/>
+        <Button Style="{StaticResource selectionTile}" Content="Pickup" Margin="405,320,0,0" BorderBrush="Yellow"/>
+        <Button Style="{StaticResource selectionTile}" Content="Wall"   Margin="70,476,0,0" BorderBrush="Green"/>
+        <Button Style="{StaticResource selectionTile}" Content="Floor"  Margin="235,476,0,0" BorderBrush="Orange"/>
+        <Button Style="{StaticResource selectionTile}" Content="Goal"   Margin="405,476,0,0" BorderBrush="Purple"/>
 
-
-        <!--<DataGrid x:Name="tileGrid" HorizontalAlignment="Left" Height="750" Margin="682,10,0,0" VerticalAlignment="Top" Width="700">
-            <Border BorderBrush="Black" BorderThickness="2"/>
-        </DataGrid>-->
-
-    </Grid>
+    </Grid> 
 </Window>
