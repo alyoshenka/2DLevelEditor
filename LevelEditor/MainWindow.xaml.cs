@@ -17,14 +17,13 @@ using System.IO;
 
 // to do
 // save data before resizing
-// dynamically *move* buttons instead   of reinitializing them
-// don't save blak data
+// dynamically *move* buttons instead of reinitializing them
+// don't save blank data
 // way to get rows and cols from file
-// save enums as ints
-// make player singleton
-// right click to deselect/ make null
 // add instructions
 // ButtonAt(Index) function
+// save in JSON
+// add key for unity ^
 
 namespace LevelEditor
 {
@@ -33,12 +32,45 @@ namespace LevelEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum TileType
-        {
-            player, enemy, wall, floor, pickup, goal
-        };
+        enum TileType { empty, player, enemy, wall, floor, pickup, goal };
+        enum WinCondition { enemies, pickups, goal, time }; 
 
         struct Index { public int y, x; }
+
+        struct TileData
+        {
+            public TileType type;
+            public int storeNum;
+            public Brush color;
+            public string displayS;
+            public TileData(TileType t, int i, Brush b, string s)
+            {
+                type = t;
+                storeNum = i;
+                color = b;
+                displayS = s;                
+            }
+            public static explicit operator TileData(TileType t) // can i do this using reflection?
+            {
+                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].type == t) { return defaultTiles[i]; } }
+                return defaultTiles[0];
+            }
+            public static explicit operator TileData(int num) 
+            {
+                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].storeNum == num) { return defaultTiles[i]; } }
+                return defaultTiles[0];
+            }
+            public static explicit operator TileData(Brush b)
+            {
+                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].color == b) { return defaultTiles[i]; } }
+                return defaultTiles[0];
+            }
+            public static explicit operator TileData(string s)
+            {
+                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].displayS == s) { return defaultTiles[i]; } }
+                return defaultTiles[0];
+            }
+        }
    
         // initial values
         int rows;
@@ -50,15 +82,16 @@ namespace LevelEditor
         int stepVal;
         RowDefinition row;
         ColumnDefinition col;
-        TileType?[,] data;
+        TileType[,] data;
         // singletons
         Index? playerIdx;
         Index? goalIdx;
+        static TileData[] defaultTiles;
 
         Button selectedB;
 
         // buttons
-        TileType? currentTile;
+        TileType currentTile;
 
         public MainWindow()
         {
@@ -77,11 +110,14 @@ namespace LevelEditor
             slider.Minimum = minRows;
             slider.Maximum = maxRows;
             slider.TickFrequency = stepVal;
-            data = new TileType?[maxRows, maxCols];
+            data = new TileType[maxRows, maxCols];
             selectedB = new Button();
             playerIdx = null;
             goalIdx = null;
+            gcb.IsChecked = true;
+            currentTile = TileType.empty;
 
+            InitTileData();
             InitLevel(rows, cols);
         }
 
@@ -89,8 +125,6 @@ namespace LevelEditor
         void InitLevel(int r, int c)
         {
             if(null == tileGrid) { return; } // so no run on init
-
-            // EventHandler ev = new EventHandler(this.PlaceTile);
 
             // reset
             tileGrid.Children.Clear();
@@ -106,8 +140,6 @@ namespace LevelEditor
             for (int i = 0; i < r; i++) { tileGrid.RowDefinitions.Add(new RowDefinition() { Height = row.Height }); }
             for (int i = 0; i < c; i++) { tileGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = col.Width }); }
 
-            // tileGrid.ShowGridLines = true;
-
             // place buttons
             for (int y = 0; y < r; y++)
             {
@@ -116,13 +148,32 @@ namespace LevelEditor
                     Button b = new Button();
                     b.Click += new RoutedEventHandler(PlaceTile);
                     b.MouseEnter += new MouseEventHandler(ClickAndDrag);
+                    b.Background = Brushes.LightGray;
                     Grid.SetRow(b, y);
                     Grid.SetColumn(b, x);
                     // put data back in
-                    if (data != null) { b.Content = data[x, y].ToString(); }
+                    if (data != null)
+                    {                       
+                        if(data[x,y] != TileType.empty) { b.Content = data[x, y].ToString(); }
+                        b.BorderBrush = ((TileData)data[x, y]).color;
+                        b.FontSize = tileGrid.Height / rows / 4;
+                    }
                     tileGrid.Children.Add(b);                    
                }
             }            
+        }
+
+        void InitTileData()
+        {
+            defaultTiles = new TileData[7];
+            defaultTiles[0] = new TileData(TileType.empty, 0, Brushes.White, "");
+            defaultTiles[1] = new TileData(TileType.player, 1, Brushes.Blue, "Player");
+            defaultTiles[2] = new TileData(TileType.enemy, 2, Brushes.Red, "Enemy");
+            defaultTiles[3] = new TileData(TileType.floor, 3, Brushes.Orange, "Floor");
+            defaultTiles[4] = new TileData(TileType.wall, 4, Brushes.Green, "Wall");
+            defaultTiles[5] = new TileData(TileType.goal, 5, Brushes.Purple, "Goal");
+            defaultTiles[6] = new TileData(TileType.pickup, 6, Brushes.Yellow, "Pickup");
+
         }
 
         // resizes level feild
@@ -143,11 +194,10 @@ namespace LevelEditor
                 List<string> row = new List<string>();
                 foreach(var c in tileGrid.ColumnDefinitions)
                 {
-                    
+                    // what happens here
                 }
                 dat.Add(row);
             }
-
             return dat;
         }
 
@@ -165,10 +215,7 @@ namespace LevelEditor
                     string row = "";
                     for (int y = 0; y < cols; y++)
                     {
-                        for (int x = 0; x < rows; x++)
-                        {
-                            row += data[x, y].ToString() + "-";
-                        }
+                        for (int x = 0; x < rows; x++) { row += ((TileData)data[x, y]).storeNum + "-"; } // CHANGE
                         if (row.Length > 0) { sw.WriteLine(row); }
                         row = "";
                     }
@@ -195,11 +242,11 @@ namespace LevelEditor
                     while ((line = sr.ReadLine()) != null)
                     {
                         string[] tiles = line.Split('-');
-                        for (int i = 0; i < tiles.Length; i++)
+                        for (int i = 0; i < tiles.Length - 1; i++)
                         {
-                            TileType current;
-                            if (Enum.TryParse(tiles[i], out current)) { data[c, r] = current; }
-                            else { data[c, r] = null; }
+                            int j = Int32.Parse(tiles[i]);
+                            TileType k = ((TileData)(j)).type;
+                            data[c, r] = k; // ?
                             c++;
                         }
                         if (c > cols + 1) { cols = c; } // TEST RESIZING
@@ -223,7 +270,7 @@ namespace LevelEditor
         // clears data in grid
         void ClearData(object sender, RoutedEventArgs e)
         {
-            for (int r = 0; r < rows; r++) { for (int c = 0; c < cols; c++) { data[c, r] = null; } }       
+            for (int r = 0; r < rows; r++) { for (int c = 0; c < cols; c++) { data[c, r] = TileType.empty; } }       
             InitLevel(rows, cols); // there is a more efficient way than recreating each time
         }
 
@@ -238,33 +285,12 @@ namespace LevelEditor
         public void SelectTile(object sender, RoutedEventArgs e)
         {
             Button b = (Button)sender;
-            selectedB = b;
-            string s = b.Content.ToString();
-
-            switch (s)
-            {
-                case "Player":
-                    currentTile = TileType.player;
-                    break;
-                case "Enemy":
-                    currentTile = TileType.enemy;
-                    break;
-                case "Pickup":
-                    currentTile = TileType.pickup;
-                    break;
-                case "Wall":
-                    currentTile = TileType.wall;
-                    break;
-                case "Floor":
-                    currentTile = TileType.floor;
-                    break;
-                case "Goal":
-                    currentTile = TileType.goal;
-                    break;
-                default:
-                    currentTile = null;
-                    break;
-            }
+            selectedB.ClearValue(BackgroundProperty);
+            selectedB = b;           
+            TileType prev = currentTile;
+            currentTile = ((TileData)selectedB.Content.ToString()).type;
+            if (prev == currentTile) { currentTile = TileType.empty; }
+            else { selectedB.Background = Brushes.LightBlue; }                     
         }
 
         // places tile
@@ -274,17 +300,26 @@ namespace LevelEditor
             b.Content = selectedB.Content; // set content
             b.Background = selectedB.BorderBrush; // set color           
             Index i = GetIndex(b);
-            if ((string)selectedB.Content == "Player")
+            if (currentTile == TileType.player)
             {               
                 if(playerIdx != null)
                 {
                     Index p = (Index)playerIdx;
-                    data[p.y, p.x] = null;
+                    data[p.y, p.x] = TileType.empty;
                 }
                 playerIdx = i;
-                // InitLevel(rows, cols); // reload
             }
-            data[i.y, i.x] = currentTile;
+            if (currentTile == TileType.goal)
+            {
+                if (goalIdx != null)
+                {
+                    Index p = (Index)goalIdx;
+                    data[p.y, p.x] = TileType.empty;
+                }
+                goalIdx = i;
+            }
+            data[i.y, i.x] = data[i.y, i.x] == currentTile ? TileType.empty : currentTile;
+            InitLevel(rows, cols);
         }
 
         // gets index of button in grid
@@ -315,11 +350,28 @@ namespace LevelEditor
         void ClickAndDrag(object sender, MouseEventArgs e)
         {
             Button b = (Button)sender;
-            if(b.IsMouseOver && Mouse.RightButton == MouseButtonState.Pressed)
-            {
-                saveText.Text = "working";
-                PlaceTile(sender, e);
-            }
+            if (b.IsMouseOver && Mouse.RightButton == MouseButtonState.Pressed) { PlaceTile(sender, e); }
+        }
+
+        void WinCond(object sender, RoutedEventArgs e)
+        {
+            // find how many boxes are checked
+            int count = 0;
+            if (gcb.IsChecked == true) { count++; }
+            if (ecb.IsChecked == true) { count++; }
+            if (pcb.IsChecked == true) { count++; }
+            if (tcb.IsChecked == true) { count++; }
+            if(count == 0) { ((CheckBox)sender).IsChecked = true; }
+        }
+
+        // the point of this program
+        void OpenInUnity(object sender, RoutedEventArgs e)
+        {
+            string path = "C:\\Users\\s189076\\source\\repos\\LevelEditor\\LevelPlayer\\Builds\\LevelPlayer.exe"; // make relative           
+            // process.waitforexit
+            System.Diagnostics.ProcessStartInfo s = new System.Diagnostics.ProcessStartInfo();
+            s.WorkingDirectory = path;
+            System.Diagnostics.Process.Start(s); // THIS
         }
     }   
 }

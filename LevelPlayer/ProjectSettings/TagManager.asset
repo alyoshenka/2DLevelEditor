@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Goal
+  - Cursor
+  - Bullet
+  - Enemy
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -14,8 +18,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Background
+  - Foreground
   - 
   - 
   - 
