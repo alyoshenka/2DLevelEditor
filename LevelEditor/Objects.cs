@@ -9,6 +9,7 @@ using System.Windows.Media;
 namespace LevelEditor
 {
     // contains helper enums, structs, classes
+
     public partial class MainWindow : Window
     {
         enum TileType { empty, player, enemy, wall, floor, pickup, goal, random };
@@ -52,13 +53,13 @@ namespace LevelEditor
             }
         }
 
-        struct Vector2 { public float x, y; }
-
         class LevelData
         {
-            List<WinCondition> winConds;
-            bool isLastLevel;
-            TileData[,] data;
+            public List<WinCondition> winConds;
+            public bool isLastLevel;
+            public TileType[,] data;
+            public Index size;
+            // ToLevelData here?
         }
     }
 }

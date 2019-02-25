@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1400"
-        KeyDown="KeyDownHandler">
+        KeyDown="KeyDownHandler"
+        MouseWheel="MouseWheelHandler">
     <Window.Resources>
       
         <Style x:Key="selectionTile" TargetType="Button" >
@@ -37,30 +38,41 @@
         <Grid Name="tileGrid" HorizontalAlignment="Left" Height="518" Margin="802,48,0,0" VerticalAlignment="Top" Width="536">
             <Border BorderBrush="Black" BorderThickness="2"/>
         </Grid>
-            
-        <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="836,656,0,0" VerticalAlignment="Top" Width="448"/>
-        <Button Style="{StaticResource smallButton}" Click="SaveData" Content="Save Level" HorizontalAlignment="Left" Height="60" Margin="48,48,0,0" VerticalAlignment="Top" Width="154"/>
-        <Button Style="{StaticResource smallButton}" Click="ClearData" Content="New Level" HorizontalAlignment="Left" Height="60" Margin="485,48,0,0" VerticalAlignment="Top" Width="154"/>
-        <Button Style="{StaticResource smallButton}" Click="LoadData" Content="Load Level" HorizontalAlignment="Left" Height="60" Margin="273,48,0,0" VerticalAlignment="Top" Width="152"/>
-        <TextBox Name="saveText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="48,133,0,0" TextWrapping="Wrap" Text="fileName" VerticalAlignment="Top" Width="206"/>
-        <TextBox Name="loadText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="273,133,0,0" TextWrapping="Wrap" Text="filePath" VerticalAlignment="Top" Width="212"/>
-        <Label Content="Tile Types" FontSize="40" HorizontalAlignment="Left" Height="70" Margin="48,178,0,0" VerticalAlignment="Top" Width="204"/>
-        <Button Content="Open in Unity" Click="OpenInUnity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="108,652,0,0" VerticalAlignment="Top" Width="348"/>
+                    
+        <Button Style="{StaticResource smallButton}" Click="SaveDataButton" Content="Save Level" HorizontalAlignment="Left" Height="60" Margin="22,24,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button Style="{StaticResource smallButton}" Click="ClearData" Content="New Level" HorizontalAlignment="Left" Height="60" Margin="402,24,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button Style="{StaticResource smallButton}" Click="LoadDataButton" Content="Load Level" HorizontalAlignment="Left" Height="60" Margin="213,24,0,0" VerticalAlignment="Top" Width="152"/>
+        <Button Style="{StaticResource smallButton}"    Content="Save Game" HorizontalAlignment="Left" Height="94" Margin="598,24,0,0" VerticalAlignment="Top" Width="154"/>
 
+        <TextBox Name="saveText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="22,89,0,0" TextWrapping="Wrap" Text="fileName" VerticalAlignment="Top" Width="154"/>
+        <TextBox Name="loadText" GotFocus="TBFocus" HorizontalAlignment="Left" Height="40" Margin="213,89,0,0" TextWrapping="Wrap" Text="filePath" VerticalAlignment="Top" Width="152"/>
+
+        <Label Content="Tile Types" FontSize="40" HorizontalAlignment="Left" Height="70" Margin="22,134,0,0" VerticalAlignment="Top" Width="204"/>
         <Label Content="Level Size" FontSize="25" HorizontalAlignment="Left" Height="40" Margin="1008,593,0,0" VerticalAlignment="Top" Width="124"/>
-        <Button Style="{StaticResource selectionTile}" Content="Player" Name="PlayerB" Margin="48,253,0,0" BorderBrush="Blue" RenderTransformOrigin="0.625,-0.125"/>
-        <Button Style="{StaticResource selectionTile}" Content="Enemy"  Name="EnemyB" Margin="213,253,0,0" BorderBrush="Red" RenderTransformOrigin="-0.013,0.463"/>
-        <Button Style="{StaticResource selectionTile}" Content="Pickup" Name="PickupB" Margin="376,253,0,0" BorderBrush="Yellow"/>
-        <Button Style="{StaticResource selectionTile}" Content="Wall"   Name="WallB" Margin="48,402,0,0" BorderBrush="Green"/>
-        <Button Style="{StaticResource selectionTile}" Content="Floor"  Name="FloorB" Margin="213,402,0,0" BorderBrush="Orange"/>
-        <Button Style="{StaticResource selectionTile}" Content="Goal"   Name="GoalB" Margin="376,402,0,0" BorderBrush="Purple"/> 
-        <Button Style="{StaticResource selectionTile}" Content="Clear"  Name="ClearB" Margin="544,253,0,0" BorderBrush="Gray"/>
-        <Button Style="{StaticResource selectionTile}" Content="Random" Name="RandomB" Margin="544,402,0,0" BorderBrush="Black"/>
-        <Label Content="Win Conditions" FontSize="30" HorizontalAlignment="Left" Height="58" Margin="48,508,0,0" VerticalAlignment="Top" Width="224"/>
-        <CheckBox Style="{StaticResource winCondChecker}" Content="Goal"    Name="gcb" Margin="48,580,0,0" VerticalAlignment="Top"/>
-        <CheckBox Style="{StaticResource winCondChecker}" Content="Enemies" Name="ecb" Margin="148,580,0,0" VerticalAlignment="Top"/>
-        <CheckBox Style="{StaticResource winCondChecker}" Content="Pickups" Name="pcb" Margin="253,580,0,0" VerticalAlignment="Top"/>
-        <CheckBox Style="{StaticResource winCondChecker}" Content="Time"    Name="tcb" Margin="353,580,0,0" VerticalAlignment="Top"/>
+        <Button Style="{StaticResource selectionTile}" Content="Player" Name="PlayerB" Margin="22,204,0,0" BorderBrush="Blue" RenderTransformOrigin="0.625,-0.125"/>
+        <Button Style="{StaticResource selectionTile}" Content="Enemy"  Name="EnemyB" Margin="135,204,0,0" BorderBrush="Red" RenderTransformOrigin="-0.013,0.463"/>
+        <Button Style="{StaticResource selectionTile}" Content="Pickup" Name="PickupB" Margin="241,204,0,0" BorderBrush="Yellow" RenderTransformOrigin="-0.662,0.1"/>
+        <Button Style="{StaticResource selectionTile}" Content="Wall"   Name="WallB" Margin="22,307,0,0" BorderBrush="Green"/>
+        <Button Style="{StaticResource selectionTile}" Content="Floor"  Name="FloorB" Margin="135,307,0,0" BorderBrush="Orange"/>
+        <Button Style="{StaticResource selectionTile}" Content="Goal"   Name="GoalB" Margin="241,307,0,0" BorderBrush="Purple"/> 
+        <Button Style="{StaticResource selectionTile}" Content="Clear"  Name="ClearB" Margin="353,204,0,0" BorderBrush="Gray"/>
+        <Button Style="{StaticResource selectionTile}" Content="Random" Name="RandomB" Margin="353,307,0,0" BorderBrush="Black"/>
+
+        <Label Content="Level Order" FontSize="30" HorizontalAlignment="Left" Height="53" Margin="463,145,0,0" VerticalAlignment="Top" Width="204"/>
+        <Label Content="Loaded Levels" FontSize="20" HorizontalAlignment="Left" Height="41" Margin="463,198,0,0" VerticalAlignment="Top" Width="204"/>
+        <ListBox Name="loadedLevels" HorizontalAlignment="Left" Height="148" Margin="463,239,0,0" VerticalAlignment="Top" Width="306"/>
+        <Label Content="Unloaded Levels" FontSize="20" HorizontalAlignment="Left" Height="41" Margin="463,387,0,0" VerticalAlignment="Top" Width="204"/>
+        <ListBox Name="unloadedLevels" HorizontalAlignment="Left" Height="205" Margin="463,428,0,0" VerticalAlignment="Top" Width="306"/>
+
+
+        <Label Content="Win Conditions" FontSize="30" HorizontalAlignment="Left" Height="58" Margin="22,392,0,0" VerticalAlignment="Top" Width="224"/>
+        <CheckBox Style="{StaticResource winCondChecker}" Content="Goal"    Name="gcb" Margin="22,450,0,0" VerticalAlignment="Top"/>
+        <CheckBox Style="{StaticResource winCondChecker}" Content="Enemies" Name="ecb" Margin="122,450,0,0" VerticalAlignment="Top"/>
+        <CheckBox Style="{StaticResource winCondChecker}" Content="Pickups" Name="pcb" Margin="241,450,0,0" VerticalAlignment="Top"/>
+        <CheckBox Style="{StaticResource winCondChecker}" Content="Time"    Name="tcb" Margin="341,450,0,0" VerticalAlignment="Top"/>
+
+        <Button Content="Open in Unity" Click="OpenInUnity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="108,652,0,0" VerticalAlignment="Top" Width="348"/>
+        <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="836,656,0,0" VerticalAlignment="Top" Width="448"/>
 
     </Grid> 
 </Window>
