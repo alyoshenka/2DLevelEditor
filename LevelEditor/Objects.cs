@@ -8,14 +8,15 @@ using System.Windows.Media;
 
 namespace LevelEditor
 {
-    // contains helper enums and structs
+    // contains helper enums, structs, classes
     public partial class MainWindow : Window
     {
         enum TileType { empty, player, enemy, wall, floor, pickup, goal, random };
         enum WinCondition { enemies, pickups, goal, time };
 
-        struct Index { public int y, x; }
+        struct Index { public int y, x; public Index(int _y, int _x) { y = _y; x = _x; } }
 
+        // holds tile data and allows typre conversion given one input
         struct TileData
         {
             public TileType type;
@@ -52,5 +53,12 @@ namespace LevelEditor
         }
 
         struct Vector2 { public float x, y; }
+
+        class LevelData
+        {
+            List<WinCondition> winConds;
+            bool isLastLevel;
+            TileData[,] data;
+        }
     }
 }
