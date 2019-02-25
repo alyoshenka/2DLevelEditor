@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1400">
+        Title="MainWindow" Height="800" Width="1400"
+        KeyDown="KeyDownHandler">
     <Window.Resources>
       
         <Style x:Key="selectionTile" TargetType="Button" >
@@ -14,7 +15,7 @@
             <Setter Property="Height" Value="80"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="BorderThickness" Value="10"/>
+            <Setter Property="BorderThickness" Value="5"/>
             <Setter Property="Background" Value="LightGray"/>
             <EventSetter Event="Click" Handler="SelectTile"/>
         </Style>
@@ -52,7 +53,9 @@
         <Button Style="{StaticResource selectionTile}" Content="Pickup" Name="PickupB" Margin="376,253,0,0" BorderBrush="Yellow"/>
         <Button Style="{StaticResource selectionTile}" Content="Wall"   Name="WallB" Margin="48,402,0,0" BorderBrush="Green"/>
         <Button Style="{StaticResource selectionTile}" Content="Floor"  Name="FloorB" Margin="213,402,0,0" BorderBrush="Orange"/>
-        <Button Style="{StaticResource selectionTile}" Content="Goal"   Name="GoalB" Margin="376,402,0,0" BorderBrush="Purple"/>
+        <Button Style="{StaticResource selectionTile}" Content="Goal"   Name="GoalB" Margin="376,402,0,0" BorderBrush="Purple"/> 
+        <Button Style="{StaticResource selectionTile}" Content="Clear"  Name="ClearB" Margin="544,253,0,0" BorderBrush="Gray"/>
+        <Button Style="{StaticResource selectionTile}" Content="Random" Name="RandomB" Margin="544,402,0,0" BorderBrush="Black"/>
         <Label Content="Win Conditions" FontSize="30" HorizontalAlignment="Left" Height="58" Margin="48,508,0,0" VerticalAlignment="Top" Width="224"/>
         <CheckBox Style="{StaticResource winCondChecker}" Content="Goal"    Name="gcb" Margin="48,580,0,0" VerticalAlignment="Top"/>
         <CheckBox Style="{StaticResource winCondChecker}" Content="Enemies" Name="ecb" Margin="148,580,0,0" VerticalAlignment="Top"/>

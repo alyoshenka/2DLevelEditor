@@ -24,6 +24,7 @@ using System.IO;
 // ButtonAt(Index) function
 // save in JSON
 // add key for unity ^
+// bool for isplacing vs isremoving?
 
 namespace LevelEditor
 {
@@ -32,46 +33,7 @@ namespace LevelEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        enum TileType { empty, player, enemy, wall, floor, pickup, goal };
-        enum WinCondition { enemies, pickups, goal, time }; 
-
-        struct Index { public int y, x; }
-
-        struct TileData
-        {
-            public TileType type;
-            public int storeNum;
-            public Brush color;
-            public string displayS;
-            public TileData(TileType t, int i, Brush b, string s)
-            {
-                type = t;
-                storeNum = i;
-                color = b;
-                displayS = s;                
-            }
-            public static explicit operator TileData(TileType t) // can i do this using reflection?
-            {
-                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].type == t) { return defaultTiles[i]; } }
-                return defaultTiles[0];
-            }
-            public static explicit operator TileData(int num) 
-            {
-                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].storeNum == num) { return defaultTiles[i]; } }
-                return defaultTiles[0];
-            }
-            public static explicit operator TileData(Brush b)
-            {
-                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].color == b) { return defaultTiles[i]; } }
-                return defaultTiles[0];
-            }
-            public static explicit operator TileData(string s)
-            {
-                for (int i = 0; i < defaultTiles.Length; i++) { if (defaultTiles[i].displayS == s) { return defaultTiles[i]; } }
-                return defaultTiles[0];
-            }
-        }
-   
+          
         // initial values
         int rows;
         int cols;
@@ -165,7 +127,7 @@ namespace LevelEditor
 
         void InitTileData()
         {
-            defaultTiles = new TileData[7];
+            defaultTiles = new TileData[8];
             defaultTiles[0] = new TileData(TileType.empty, 0, Brushes.White, "");
             defaultTiles[1] = new TileData(TileType.player, 1, Brushes.Blue, "Player");
             defaultTiles[2] = new TileData(TileType.enemy, 2, Brushes.Red, "Enemy");
@@ -173,6 +135,7 @@ namespace LevelEditor
             defaultTiles[4] = new TileData(TileType.wall, 4, Brushes.Green, "Wall");
             defaultTiles[5] = new TileData(TileType.goal, 5, Brushes.Purple, "Goal");
             defaultTiles[6] = new TileData(TileType.pickup, 6, Brushes.Yellow, "Pickup");
+            defaultTiles[7] = new TileData(TileType.random, 6, Brushes.Black, "Random");
 
         }
 
@@ -286,11 +249,13 @@ namespace LevelEditor
         {
             Button b = (Button)sender;
             selectedB.ClearValue(BackgroundProperty);
-            selectedB = b;           
+            selectedB = b;
             TileType prev = currentTile;
             currentTile = ((TileData)selectedB.Content.ToString()).type;
-            if (prev == currentTile) { currentTile = TileType.empty; }
-            else { selectedB.Background = Brushes.LightBlue; }                     
+            //if (prev == currentTile) { currentTile = TileType.empty; }
+            //else { selectedB.Background = Brushes.LightBlue; }   
+            // make clear selected on double click?
+            selectedB.Background = Brushes.LightBlue;
         }
 
         // places tile
@@ -371,7 +336,79 @@ namespace LevelEditor
             // process.waitforexit
             System.Diagnostics.ProcessStartInfo s = new System.Diagnostics.ProcessStartInfo();
             s.WorkingDirectory = path;
-            System.Diagnostics.Process.Start(s); // THIS
+            // System.Diagnostics.Process.Start(s); // THIS
+        }
+
+        // handles keyboard input
+        void KeyDownHandler(object sender, KeyEventArgs e)
+        {
+            Vector2 input = new Vector2();
+            input.x = e.Key == Key.Left ? -1 : e.Key == Key.Right ? 1 : 0;
+            input.y = e.Key == Key.Up ? -1 : e.Key == Key.Down ? 1 : 0;
+            ShiftGrid(input);
+        }
+
+        // moves grid in direction of arrow keys
+        void ShiftGrid(Vector2 dir)
+        {
+            // look for patterns to optimize code
+
+            // down
+            if(dir.y == 1)
+            {
+                for(int r = rows - 1; r > 0; r--)
+                {
+                    for(int c = 0; c < cols; c++)
+                    {
+                        // data[c, 0] = TileType.empty;
+                        data[c, r] = data[c, r-1];
+                    }
+                }
+                for(int c = 0; c < cols; c++)
+                {
+                    data[c,0] = TileType.empty;
+                }
+            }
+            // up
+            if(dir.y == -1)
+            {
+                for(int r = 0; r < rows - 1; r++)
+                {
+                    for(int c = 0; c < cols; c++)
+                    {
+                        data[c, r] = data[c, r + 1];
+                    }
+                }
+                for (int c = cols - 1; c >= 0; c--)
+                {
+                    data[c, rows - 1] = TileType.empty;
+                }
+            }
+            // right
+            if (dir.x == 1)
+            {
+                for (int r = 0; r < rows; r++)
+                {
+                    for (int c = cols - 1; c > 0; c--)
+                    {
+                        data[c, r] = data[c - 1, r];
+                    }
+                }
+                for(int r = 0; r < rows; r++) { data[0, r] = TileType.empty; }
+            }
+            // left
+            if(dir.x == -1)
+            {
+                for (int r = 0; r < rows; r++)
+                {
+                    for (int c = 0; c < cols - 1; c++)
+                    {
+                        data[c, r] = data[c + 1, r];
+                    }
+                }
+                for(int r = 0; r < rows; r++) { data[cols - 1, r] = TileType.empty; }
+            }          
+            InitLevel(rows, cols);
         }
     }   
 }
