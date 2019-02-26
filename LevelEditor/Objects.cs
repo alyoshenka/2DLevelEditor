@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Numerics;
 
 namespace LevelEditor
 {
@@ -14,8 +12,6 @@ namespace LevelEditor
     {
         enum TileType { empty, player, enemy, wall, floor, pickup, goal, random };
         enum WinCondition { enemies, pickups, goal, time };
-
-        struct Index { public int y, x; public Index(int _y, int _x) { y = _y; x = _x; } }
 
         // holds tile data and allows typre conversion given one input
         struct TileData
@@ -55,10 +51,12 @@ namespace LevelEditor
 
         class LevelData
         {
-            public List<WinCondition> winConds;
+            public List<string> winConds;
             public bool isLastLevel;
-            public TileType[,] data;
-            public Index size;
+            public string[,] data;
+            public Vector2 size;
+            // static List<string> allWinConds;
+            // static List<string> allTileTypes;
             // ToLevelData here?
         }
     }

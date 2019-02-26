@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using System.Collections.Generic;
 
 namespace LevelEditor
 
@@ -30,6 +30,12 @@ namespace LevelEditor
             goalIdx = null;
             gcb.IsChecked = true;
             currentTile = TileType.empty;
+            savedLevels = new System.Collections.ObjectModel.ObservableCollection<ListBoxItem>();
+            loadedLevels = new System.Collections.ObjectModel.ObservableCollection<ListBoxItem>();
+            uLevels.DataContext = savedLevels;
+            lLevels.DataContext = loadedLevels;
+            uLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
+            lLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
         }
 
         // initialize level feild

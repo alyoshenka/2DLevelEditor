@@ -8,10 +8,11 @@ using System.IO;
 // level chaining in editor
 // maually set win cond
 // exe loads from file
+// silent launch?
 
 public class GameManager : MonoBehaviour {
 
-    enum TileType { empty=0, player, enemy, wall, floor, pickup, goal };
+    enum TileType { empty, player, enemy, wall, floor, pickup, goal };
 
     List<List<TileType?>> data;
 
@@ -23,12 +24,21 @@ public class GameManager : MonoBehaviour {
     GameObject floorObject;
     GameObject pickupObject;
 
+    // dynamic object
+
     // Use this for initialization
     void Awake () {
-        
+      
         // load file
-        data = new List<List<TileType?>>();        
-        LoadData("blah");
+        data = new List<List<TileType?>>();
+
+        // get args
+        string[] args = System.Environment.GetCommandLineArgs();
+        // search for level data
+        string path = "";
+        foreach(string s in args) { if (s.Contains("LevelData")){ path = s; break; }}
+        if(path == "") { /*error*/ }
+
         SetupLevel();
 
         Cursor.SetCursor(Resources.Load("cursor") as Texture2D, Vector2.zero, CursorMode.Auto);
@@ -38,17 +48,22 @@ public class GameManager : MonoBehaviour {
     void LoadData(string path)
     {
         // reset path
-        path = "C:\\Users\\s189076\\source\\repos\\LevelEditor\\LevelPlayer\\Builds\\unityTest.txt";
-        Debug.Log(Directory.GetCurrentDirectory());
+        // path = "C:\\Users\\s189076\\source\\repos\\LevelEditor\\LevelPlayer\\Builds\\unityTest.txt";
+        // verify path and make relative
+
+
+        // Debug.Log(Directory.GetCurrentDirectory());
 
         // if (path.Substring(path.Length - 5) != ".txt") { path += ".txt"; }
+
+        return;
 
         try
         {
             string line;
             List<TileType?> line2 = new List<TileType?>();
             
-            using (StreamReader sr = new StreamReader("unityTest.txt"))
+            using (StreamReader sr = new StreamReader(path))
             {                
                 while ((line = sr.ReadLine()) != null)
                 {
@@ -80,7 +95,7 @@ public class GameManager : MonoBehaviour {
                 if (data[i][j] == TileType.pickup) { Instantiate(Resources.Load("Pickup"), pos, rot); }
                 if (data[i][j] == TileType.enemy ) { Instantiate(Resources.Load("Enemy"),  pos, rot); }
                 if (data[i][j] == TileType.goal  ) { Instantiate(Resources.Load("Goal"),   pos, rot); }
-                if (data[i][j] == TileType.floor) { Instantiate(Resources.Load("Floor"), pos, rot); }
+                if (data[i][j] == TileType.floor)  { Instantiate(Resources.Load("Floor"),  pos, rot); }
                 Instantiate(Resources.Load("Floor"), pos, rot); // always add floor
             }
         }
@@ -100,7 +115,8 @@ public class GameManager : MonoBehaviour {
 
     public void TryToAdvance()
     {
-        // if win cond, go to win screen
+        // if win cond, go to win screen or next level
+        // else restart level (?) -> this should be a setting
  
     }
     
