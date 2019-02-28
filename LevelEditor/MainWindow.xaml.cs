@@ -42,6 +42,8 @@ using System.Collections.ObjectModel;
 // fix mousewheelhandler
 // fix level scroll
 // handledeventstoo
+// levels dont move correctly
+// double click
 
 namespace LevelEditor
 {
@@ -70,6 +72,7 @@ namespace LevelEditor
         TileType currentTile;
         ObservableCollection<ListBoxItem> savedLevels;
         ObservableCollection<ListBoxItem> loadedLevels;
+        static Dictionary<int, string> key; // unity int to string key
 
 
         public MainWindow()
@@ -132,7 +135,8 @@ namespace LevelEditor
             string path = "Games/" + saveGame.Text + ".txt";           
             using (StreamWriter sw = File.CreateText(path))
             {
-                foreach (ListBoxItem i in lLevels.Items) { sw.WriteLine(JsonConvert.SerializeObject(LoadData(i.Content.ToString()))); }
+                sw.WriteLine(JsonConvert.SerializeObject(key)); // save key
+                foreach (ListBoxItem i in lLevels.Items) { sw.WriteLine(JsonConvert.SerializeObject(LoadData(i.Content.ToString()))); } // save levels
             }
         }
 
@@ -170,14 +174,14 @@ namespace LevelEditor
             {
                 for (int x = 0; x < level.size.X; x++)
                 {
-                    data[y, x] = level.data[y, x];
+                    data[y, x] = (TileType)level.data[y, x];
                 }
             }
             // IS THIS NEEDED
             rows = (int)level.size.Y + (int)level.size.Y % stepVal;
             cols = (int)level.size.X + (int)level.size.X % stepVal;
-            rows.Clamp(minRows, maxRows);
-            cols.Clamp(minCols, maxCols);
+            rows = rows.Clamp(minRows, maxRows);
+            cols = cols.Clamp(minCols, maxCols);
             // set to same size (square grid)
             if (cols > rows) { rows = cols; }
             if (rows > cols) { cols = rows; }
@@ -303,11 +307,72 @@ namespace LevelEditor
             // shift grid
             Vector2 input = new Vector2();
             bool sg = false; // Shifting Grid
-            if (e.Key == Key.Left) { input.X = -1; sg = true; }
-            if (e.Key == Key.Right) { input.X = 1; sg = true; }
-            if (e.Key == Key.Up) { input.Y = -1; sg = true; }
-            if (e.Key == Key.Down) { input.Y = 1; sg = true; }
+            if (e.Key == Key.A) { input.X = -1; sg = true; }
+            if (e.Key == Key.D) { input.X = 1; sg = true; }
+            if (e.Key == Key.W) { input.Y = -1; sg = true; }
+            if (e.Key == Key.S) { input.Y = 1; sg = true; }
             if (sg) { ShiftGrid(input); }
+
+            // move levels
+            LevelShiftHandler(sender, e);
+        }
+
+        // deals with lb selection
+        void SelectionChangedHandler(object sender, SelectionChangedEventArgs e)
+        {
+            if ((ListBox)sender == uLevels) { lLevels.UnselectAll(); }
+            if ((ListBox)sender == lLevels) { uLevels.UnselectAll(); }
+        }
+
+        // moves level order
+        void LevelShiftHandler(object sender, KeyEventArgs e)
+        {
+            ListBoxItem current = GetSelectedItem();
+            //ListBox parent;
+            //ListBox other;
+            //parent = GetParent<ListBox>(current);
+            //other = parent == uLevels ? uLevels : lLevels;
+            ObservableCollection<ListBoxItem> parent;
+            ObservableCollection<ListBoxItem> other;
+            ListBox parentLB;
+            ListBox otherLB;
+            if(GetParent<ListBox>(current) == uLevels)
+            {
+                parent = savedLevels;
+                other = loadedLevels;
+                parentLB = uLevels;
+            }
+            else
+            {
+                parent = loadedLevels;
+                other = savedLevels;
+                parentLB = lLevels;
+            }
+
+            // if enter, swap
+            // if up/down -> up/down (wrapping)
+            if (e.Key == Key.Enter)
+            {
+                // swap       
+                parent.Remove(current);
+                other.Add(current);
+                
+            }
+            int idx = parent.IndexOf(current);
+            // if within bounds
+            if (e.Key == Key.Left && idx > 0)
+            {
+                parent.Remove(current);
+                parent.Insert(idx - 1, current);
+                parentLB.SelectedIndex = idx - 1;
+                
+            }
+            if(e.Key == Key.Right && idx < parent.Count - 1)
+            {
+                parent.Remove(current);
+                parent.Insert(idx + 1, current);
+                parentLB.SelectedIndex = idx + 1;
+            }
         }
 
         // custom dependancy property to get parent
@@ -316,9 +381,15 @@ namespace LevelEditor
         static T GetParent<T>(DependencyObject depObj) where T : class
         {
             DependencyObject target = depObj;
-            do { target = VisualTreeHelper.GetParent(target); }
-            while (target != null && ! (target is T));
+            // do { target = VisualTreeHelper.GetParent(target); }
+            while (target != null && ! (target is T)) { target = VisualTreeHelper.GetParent(target); }
             return target as T;
+        }
+
+        void SwapListBoxControl(object sender, RoutedEventArgs e)
+        {
+            if ((ListBox)sender == lLevels) { uLevels.UnselectAll(); }
+            if ((ListBox)sender == uLevels) { lLevels.UnselectAll(); }
         }
 
         // handles mouse wheel input
@@ -365,7 +436,7 @@ namespace LevelEditor
             
         }
 
-        // returns index of item in listbox
+        // returns index of item in listbox MAY NOT NEED
         int GetIndexOfItem(ListBox lb, ListBoxItem i)
         {
             for(int j = 0; j < lb.Items.Count; j++)
@@ -471,10 +542,10 @@ namespace LevelEditor
             max.X++;
             max.Y++;
             level.size = max;
-            level.data = new string[(int)max.Y, (int)max.X];
+            level.data = new int[(int)max.Y, (int)max.X];
             for (int y = 0; y < max.Y; y++)
             {
-                for (int x = 0; x < max.X; x++) { level.data[y, x] = data[y, x].ToString(); }           
+                for (int x = 0; x < max.X; x++) { level.data[y, x] = (int)data[y, x]; }           
             }
             // winconds            
             level.winConds = new List<string>(); // change logic later
@@ -494,7 +565,7 @@ namespace LevelEditor
             // unloadedLevels.Items.Clear(); // optimize
             DirectoryInfo d = new DirectoryInfo("Levels");
             FileInfo[] files = d.GetFiles();
-            // savedLevels.Clear(); // should this be here
+            savedLevels.Clear(); // should this be here
             foreach (FileInfo f in files)
             {
                 ListBoxItem i = new ListBoxItem();

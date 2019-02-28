@@ -34,8 +34,11 @@ namespace LevelEditor
             loadedLevels = new System.Collections.ObjectModel.ObservableCollection<ListBoxItem>();
             uLevels.DataContext = savedLevels;
             lLevels.DataContext = loadedLevels;
-            uLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
-            lLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
+            //uLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
+            //lLevels.MouseWheel += new MouseWheelEventHandler(MouseWheelHandler);
+            uLevels.SelectionChanged += new SelectionChangedEventHandler(SelectionChangedHandler);
+            lLevels.SelectionChanged += new SelectionChangedEventHandler(SelectionChangedHandler);
+            key = new Dictionary<int, string>();
         }
 
         // initialize level feild
@@ -71,7 +74,7 @@ namespace LevelEditor
                     // put data back in
                     if (data != null)
                     {
-                        if (data[x, y] != TileType.empty) { b.Content = data[x, y].ToString(); }
+                        if (data[x, y] != TileType.empty) { b.Content = (string)data[x, y].ToString(); }
                         b.BorderBrush = ((TileData)data[x, y]).color;
                         b.FontSize = tileGrid.Height / rows / 4;
                     }
@@ -91,6 +94,7 @@ namespace LevelEditor
             defaultTiles[5] = new TileData(TileType.goal, 5, Brushes.Purple, "Goal");
             defaultTiles[6] = new TileData(TileType.pickup, 6, Brushes.Yellow, "Pickup");
             defaultTiles[7] = new TileData(TileType.random, 6, Brushes.Black, "Random");
+            for (int i = 0; i < defaultTiles.Length; i++) { key.Add(defaultTiles[i].storeNum, defaultTiles[i].displayS); }
         }
     }
 }

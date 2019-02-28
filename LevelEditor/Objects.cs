@@ -53,7 +53,7 @@ namespace LevelEditor
         {
             public List<string> winConds;
             public bool isLastLevel;
-            public string[,] data;
+            public int[,] data;
             public Vector2 size;
             // static List<string> allWinConds;
             // static List<string> allTileTypes;
