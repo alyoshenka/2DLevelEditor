@@ -55,9 +55,6 @@ namespace LevelEditor
             public bool isLastLevel;
             public int[,] data;
             public Vector2 size;
-            // static List<string> allWinConds;
-            // static List<string> allTileTypes;
-            // ToLevelData here?
         }
     }
 }

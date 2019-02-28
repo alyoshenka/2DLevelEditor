@@ -94,7 +94,6 @@ namespace LevelEditor
             defaultTiles[5] = new TileData(TileType.goal, 5, Brushes.Purple, "Goal");
             defaultTiles[6] = new TileData(TileType.pickup, 6, Brushes.Yellow, "Pickup");
             defaultTiles[7] = new TileData(TileType.random, 6, Brushes.Black, "Random");
-            for (int i = 0; i < defaultTiles.Length; i++) { key.Add(defaultTiles[i].storeNum, defaultTiles[i].displayS); }
         }
     }
 }

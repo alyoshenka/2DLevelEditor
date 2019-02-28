@@ -616,7 +616,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: 2796b167-1c46-4ade-9095-3d3a4d7b643d
   projectName: LevelPlayer
   organizationId: alyoshenka

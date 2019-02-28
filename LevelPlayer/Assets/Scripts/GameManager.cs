@@ -3,18 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.IO;
+using Newtonsoft.Json;
+//using System.Runtime.CompilerServices;
+//using System.Web.Helpers;
+//using System;
 
 // single player validation should be done in editor
 // level chaining in editor
 // maually set win cond
 // exe loads from file
 // silent launch?
+// delete files from editor
 
 public class GameManager : MonoBehaviour {
 
-    enum TileType { empty, player, enemy, wall, floor, pickup, goal };
+    class LevelData
+    {
+        public List<string> winConds;
+        public bool isLastLevel;
+        public int[,] data;
+        public Vector2 size;
+    }
 
-    List<List<TileType?>> data;
+    List<LevelData> levels;
 
     // change how this is done
     GameObject playerObject;
@@ -24,13 +35,12 @@ public class GameManager : MonoBehaviour {
     GameObject floorObject;
     GameObject pickupObject;
 
-    // dynamic object
-
     // Use this for initialization
     void Awake () {
-      
+
         // load file
-        data = new List<List<TileType?>>();
+        levels = new List<LevelData>();
+        // key = new Dictionary<int, string>();
 
         // get args
         string[] args = System.Environment.GetCommandLineArgs();
@@ -41,40 +51,25 @@ public class GameManager : MonoBehaviour {
 
         SetupLevel();
 
-        Cursor.SetCursor(Resources.Load("cursor") as Texture2D, Vector2.zero, CursorMode.Auto);
+        // Cursor.SetCursor(Resources.Load("cursor") as Texture2D, Vector2.zero, CursorMode.Auto);
     }
 
     // loads data from file into list
     void LoadData(string path)
     {
         // reset path
-        // path = "C:\\Users\\s189076\\source\\repos\\LevelEditor\\LevelPlayer\\Builds\\unityTest.txt";
+        path = "C:/Users/s189076/source/repos/LevelEditor/LevelEditor/bin/Debug/Levels/unityTest.txt";
         // verify path and make relative
-
-
-        // Debug.Log(Directory.GetCurrentDirectory());
-
-        // if (path.Substring(path.Length - 5) != ".txt") { path += ".txt"; }
-
-        return;
 
         try
         {
-            string line;
-            List<TileType?> line2 = new List<TileType?>();
+            
+            List<int> line2 = new List<int>();
             
             using (StreamReader sr = new StreamReader(path))
-            {                
-                while ((line = sr.ReadLine()) != null)
-                {
-                    string[] tiles = line.Split('-');
-                    for (int i = 0; i < tiles.Length-1; i++)
-                    {                        
-                        line2.Add(StringToTileType(tiles[i]));
-                    }                    
-                    data.Add(new List<TileType?>(line2));
-                    line2.Clear();
-                }
+            {
+                string line = sr.ReadLine();
+                while ((line = sr.ReadLine()) != null) { levels.Add(JsonConvert.DeserializeObject<LevelData>(line)); }
             }
         }
         catch { Debug.Log("fail :("); return; }
@@ -84,34 +79,25 @@ public class GameManager : MonoBehaviour {
     {
         Vector3 pos = new Vector3();
         Quaternion rot = new Quaternion();
-        for (int i = 0; i < data.Count; i++)
+        // GO LEVEL BY LEVEL    
+        for (int i = 0; i < levels[0].data.Length; i++)
         {
-            for(int j = 0; j < data[i].Count; j++)
+            for(int j = 0; j < levels.Count; j++)
             {
                 // better way to do it!
                 pos = new Vector3(i, j, 0); // check these vals
-                if (data[i][j] == TileType.player) { Instantiate(Resources.Load("Player"), pos, rot); }
-                if (data[i][j] == TileType.wall  ) { Instantiate(Resources.Load("Wall"),   pos, rot); }
-                if (data[i][j] == TileType.pickup) { Instantiate(Resources.Load("Pickup"), pos, rot); }
-                if (data[i][j] == TileType.enemy ) { Instantiate(Resources.Load("Enemy"),  pos, rot); }
-                if (data[i][j] == TileType.goal  ) { Instantiate(Resources.Load("Goal"),   pos, rot); }
-                if (data[i][j] == TileType.floor)  { Instantiate(Resources.Load("Floor"),  pos, rot); }
-                Instantiate(Resources.Load("Floor"), pos, rot); // always add floor
+                //if (data[i][j] == TileType.player) { Instantiate(Resources.Load("Player"), pos, rot); }
+                //if (data[i][j] == TileType.wall  ) { Instantiate(Resources.Load("Wall"),   pos, rot); }
+                //if (data[i][j] == TileType.pickup) { Instantiate(Resources.Load("Pickup"), pos, rot); }
+                //if (data[i][j] == TileType.enemy ) { Instantiate(Resources.Load("Enemy"),  pos, rot); }
+                //if (data[i][j] == TileType.goal  ) { Instantiate(Resources.Load("Goal"),   pos, rot); }
+                //if (data[i][j] == TileType.floor)  { Instantiate(Resources.Load("Floor"),  pos, rot); }
+                // Instantiate(Resources.Load("Floor"), pos, rot); // always add floor
             }
         }
     }
 
-    // returns tiletype from string
-    TileType StringToTileType(string s)
-    {
-        try
-        {
-            // try parsing
-            TileType t = (TileType)System.Enum.Parse(typeof(TileType), s);
-            return t;
-        }
-        catch { return TileType.empty; }
-    }
+
 
     public void TryToAdvance()
     {

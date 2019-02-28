@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour {
         bullets = new GameObject[20];
         for(int i = 0; i < bullets.Length; i++)
         {
-            bullets[i] = Instantiate((GameObject)Resources.Load("Bullet"));
+            // bullets[i] = Instantiate((GameObject)Resources.Load("Bullet"));
         }
     }
 	
