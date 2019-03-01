@@ -6,7 +6,7 @@ using UnityEngine;
 // add code through editor (extension methods?)
 // null buttons on resize / move created level around
 
-public class PlayerController : MonoBehaviour {
+public class Player : MonoBehaviour {
    
     Vector2 input;
     Vector2 mousePos;
