@@ -93,7 +93,7 @@ namespace LevelEditor
             defaultTiles[4] = new TileData(TileType.wall, 4, Brushes.Green, "Wall");
             defaultTiles[5] = new TileData(TileType.goal, 5, Brushes.Purple, "Goal");
             defaultTiles[6] = new TileData(TileType.pickup, 6, Brushes.Yellow, "Pickup");
-            defaultTiles[7] = new TileData(TileType.random, 6, Brushes.Black, "Random");
+            defaultTiles[7] = new TileData(TileType.random, 7, Brushes.Black, "Random");
         }
     }
 }

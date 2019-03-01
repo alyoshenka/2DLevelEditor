@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LevelEditor
 {
@@ -9,6 +10,12 @@ namespace LevelEditor
             if (val.CompareTo(min) < 0) { return min; }
             else if (val.CompareTo(max) > 0) { return max; }
             else { return val; }
+        }
+
+        public static bool Contains<T>(this Array val, T goal) where T : IEquatable<T>
+        {
+            foreach(T i in val) { if(i.Equals(goal)) { return true; } }
+            return false;
         }
     }
 }

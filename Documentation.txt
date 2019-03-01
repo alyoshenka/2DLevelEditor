@@ -1,0 +1,2 @@
+tile off screen = deleted
+mouseover to move grid

@@ -51,10 +51,11 @@ namespace LevelEditor
 
         class LevelData
         {
-            public List<string> winConds;
+            public List<int> winConds;
             public bool isLastLevel;
             public int[,] data;
-            public Vector2 size;
+            public int width;
+            public int height;
         }
     }
 }

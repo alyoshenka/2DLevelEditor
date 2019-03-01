@@ -8,7 +8,11 @@ public class Goal : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            GameObject.FindObjectOfType<GameManager>().TryToAdvance();
+            Debug.Log("p");
+            // GameManager gm = FindObjectOfType<GameManager>();
+            GameManager gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); // gross
+            gm.atGoal = true;
+            FindObjectOfType<GameManager>().TryToAdvance();
         }
     }
 }

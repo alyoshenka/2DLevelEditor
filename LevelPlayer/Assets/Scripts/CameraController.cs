@@ -9,17 +9,13 @@ public class CameraController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        try
-        {
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-            transform.position = new Vector3(player.position.x, player.position.y, -10);
-        }
-        catch { }
-        
-	}
+        DontDestroyOnLoad(gameObject);
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        transform.position = new Vector3(player.position.x, player.position.y, -10);
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        transform.position = new Vector3(player.position.x, player.position.y, -10);
+    }
 }

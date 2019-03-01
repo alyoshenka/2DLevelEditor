@@ -9,6 +9,8 @@ TagManager:
   - Bullet
   - Enemy
   - Wall
+  - Pickup
+  - GameManager
   layers:
   - Default
   - TransparentFX
