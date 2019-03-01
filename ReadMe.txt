@@ -1,5 +1,5 @@
-Instructions for starting Level Player
+Instructions for starting LevelEditor + Player
 
-Read Documentation.txt
-
-Run Application -> LevelEditor.exe
+Download Application.zip
+Extract
+Read ReadMe and Documentation
