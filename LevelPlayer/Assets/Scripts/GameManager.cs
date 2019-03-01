@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour {
     LevelData current;
     int currentIdx;
 
+    string[] args;
+
     public bool atGoal;
 
     // change how this is done
@@ -29,15 +31,17 @@ public class GameManager : MonoBehaviour {
     void Awake () {
 
         DontDestroyOnLoad(gameObject);
+        playerObject = GameObject.FindGameObjectWithTag("Player").gameObject;
+
         // load file
         levels = new List<LevelData>();
         // key = new Dictionary<int, string>();
         atGoal = false;
         currentIdx = -1;
-
         // get args
-        string[] args = System.Environment.GetCommandLineArgs();
-        string path = ""; // change
+        args = System.Environment.GetCommandLineArgs();
+        // string[] testArgs = { "Game=/../LevelEditor/bin/Debug/Games/unityTest.txt" };
+        string path = Directory.GetCurrentDirectory() + FindGameArg(args); 
         LoadData(path);
                        
         Cursor.SetCursor(Resources.Load("cursor") as Texture2D, Vector2.zero, CursorMode.Auto);
@@ -55,12 +59,20 @@ public class GameManager : MonoBehaviour {
         }               
     }
 
+    // finds ags with game keyword
+    string FindGameArg(string[] args)
+    {
+        foreach(string s in args) { if (s.Contains("Game=")) { return s.Replace("Game=", ""); } }
+        return ""; // nothing
+    }
+
     // loads data from file into list
     void LoadData(string path)
     {
         // reset path
         // path = "C:/Users/s189076/source/repos/LevelEditor/LevelEditor/bin/Debug/Games/unityGame.txt";
-        path = Directory.GetCurrentDirectory() + "/Games/" + path + ".txt"; // FRIDAY
+
+        // path = Directory.GetCurrentDirectory() + "/Games/" + path + ".txt"; // FRIDAY
         // verify path and make relative
 
         using (StreamReader sr = new StreamReader(path))
@@ -76,6 +88,7 @@ public class GameManager : MonoBehaviour {
 
     public void SetupLevel() // make this function better
     {
+        playerObject.GetComponent<Player>().canShoot = true;
         Vector3 pos = new Vector3();
         Quaternion rot = new Quaternion();
         // current.data = RotateArray(current.data, current.width, current.height);
@@ -91,7 +104,7 @@ public class GameManager : MonoBehaviour {
                 if (current.data[i][j] == 6) { Instantiate(Resources.Load("Goal"), pos, rot); }
                 if (current.data[i][j] == 5) { Instantiate(Resources.Load("Pickup"), pos, rot); }
 
-                if (current.data[i][j] == 1) { GameObject.FindGameObjectWithTag("Player").gameObject.transform.position = pos; } // player = singleton
+                if (current.data[i][j] == 1) { playerObject.transform.position = pos; } // player = singleton
                 if (current.data[i][j] != 4) { Instantiate(Resources.Load("Floor"), pos, rot); } // always add floor
             }
         }

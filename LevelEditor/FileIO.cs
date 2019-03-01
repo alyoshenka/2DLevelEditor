@@ -11,7 +11,8 @@ namespace LevelEditor
         // saves level data to file
         void SaveData(string path)
         {
-            if (path == "" || ! ValidateLevel()) { return; }
+            if (path == "") { outputBlock.Text = "cannot save to empty file"; return; }
+            if(! ValidateLevel()) { return; }
             path = "Levels/" + path + ".txt";
 
             using (StreamWriter file = File.CreateText(path)) { file.WriteLine(JsonConvert.SerializeObject(ToLevelData())); }
@@ -22,7 +23,8 @@ namespace LevelEditor
         // saves level chain to file
         void SaveGameButton(object sender, RoutedEventArgs e)
         {
-            string path = "Games/" + saveGame.Text + ".txt";
+            string path = "Games/Game1.txt";
+            outputBlock.Text = "Saved game";
             using (StreamWriter sw = File.CreateText(path))
             {
                 sw.WriteLine(JsonConvert.SerializeObject(key)); // save key
@@ -37,7 +39,7 @@ namespace LevelEditor
 
             LevelData level;
             try { using (StreamReader sr = new StreamReader(path)) { level = JsonConvert.DeserializeObject<LevelData>(sr.ReadToEnd()); } }
-            catch { level = ToLevelData(); }  // bad                   
+            catch { level = ToLevelData(); outputBlock.Text = "error loading data from " + path; }  // return current level                   
             return level;
         }
     }

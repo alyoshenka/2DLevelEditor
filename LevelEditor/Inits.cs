@@ -74,13 +74,16 @@ namespace LevelEditor
                     // put data back in
                     if (data != null)
                     {
-                        if (data[x, y] != TileType.empty) { b.Content = (string)data[x, y].ToString(); }
-                        b.BorderBrush = ((TileData)data[x, y]).color;
+                        if (data[x, y] != TileType.empty) { b.Content = data[x, y].ToString(); }
+                        b.Background = ((TileData)data[x, y]).color;
                         b.FontSize = tileGrid.Height / rows / 4;
                     }
                     tileGrid.Children.Add(b);
                 }
             }
+
+            // checkboxes
+
         }
 
         void InitTileData()

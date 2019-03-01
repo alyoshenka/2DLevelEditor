@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using System.IO;
-using Newtonsoft.Json;
-using System.Numerics;
 using System.Collections.ObjectModel;
+using System.Numerics;
 
 // to do
 // dynamically *move* buttons instead of reinitializing them
@@ -24,17 +13,12 @@ using System.Collections.ObjectModel;
 // ButtonAt(Index) function
 // add key for unity ^
 // listbox (?) for level chaining
-
-
-
 // optimization of data
 // dark theme
 // organize
 // prev / temp save file
 // parent class for ui args?
 // overlay instructions
-
-
 // index -> vector2
 // dont let arrow keys access slider
 // border on selected item?
@@ -43,6 +27,12 @@ using System.Collections.ObjectModel;
 // fix level scroll
 // handledeventstoo
 // error output
+// load games
+// flip sprite
+// close editor then open player?
+// add default levels
+// better error handling and messages
+// currently only support for 1 game
 
 
 namespace LevelEditor
@@ -72,7 +62,7 @@ namespace LevelEditor
         TileType currentTile;
         ObservableCollection<ListBoxItem> savedLevels;
         ObservableCollection<ListBoxItem> loadedLevels;
-        static Dictionary<int, string> key; // unity int to string key
+        static Dictionary<int, string> key; // unity int to string key        
 
         public MainWindow()
         {
@@ -109,23 +99,21 @@ namespace LevelEditor
                 }
             }
             // IS THIS NEEDED
-            rows = (int)level.height + (int)level.height % stepVal;
-            cols = (int)level.width + (int)level.width % stepVal;
+            rows = level.height + level.height % stepVal;
+            cols = level.width + level.width % stepVal;
             rows = rows.Clamp(minRows, maxRows);
             cols = cols.Clamp(minCols, maxCols);
             // set to same size (square grid)
             if (cols > rows) { rows = cols; }
             if (rows > cols) { cols = rows; }
 
-            InitLevel(rows, cols);
-        }
+            // checkboxes
+            ecb.IsChecked = level.winConds.Contains(0);
+            pcb.IsChecked = level.winConds.Contains(1);
+            gcb.IsChecked = level.winConds.Contains(2);
+            tcb.IsChecked = level.winConds.Contains(3);
 
-        // clears data in grid
-        void ClearData(object sender, RoutedEventArgs e)
-        {
-            for (int r = 0; r < rows; r++) { for (int c = 0; c < cols; c++) { data[c, r] = TileType.empty; } }
-            InitLevel(rows, cols); // there is a more efficient way than recreating each time
-            saveText.Text = "new level";
+            InitLevel(rows, cols);
         }
               
         // places tile
@@ -193,17 +181,7 @@ namespace LevelEditor
             if (tcb.IsChecked == true) { count++; }
             if (count == 0) { ((CheckBox)sender).IsChecked = true; }
         }
-
-        // the point of this program
-        void OpenInUnity(object sender, RoutedEventArgs e)
-        {
-            string path = "C:\\Users\\s189076\\source\\repos\\LevelEditor\\LevelPlayer\\Builds\\LevelPlayer.exe"; // make relative           
-            // process.waitforexit
-            System.Diagnostics.ProcessStartInfo s = new System.Diagnostics.ProcessStartInfo();
-            s.WorkingDirectory = path;
-            // System.Diagnostics.Process.Start(s); // THIS
-        }
-                   
+        
         // custom dependancy property to get parent
         // static readonly DependencyProperty GetParentProperty = DependencyProperty.Register("Parent", typeof(ListBox), typeof(ListBoxItem));
         
@@ -360,10 +338,10 @@ namespace LevelEditor
         bool ValidateLevel()
         {
             LevelData current = ToLevelData();
-            if (!current.data.Contains((int)TileType.player)) { return false; }
-            if (gcb.IsChecked == true && !current.data.Contains((int)TileType.goal)) { return false; }
-            if (ecb.IsChecked == true && !current.data.Contains((int)TileType.enemy)) { return false; }
-            if (pcb.IsChecked == true && !current.data.Contains((int)TileType.pickup)) { return false; }
+            if (!current.data.Contains((int)TileType.player)) { outputBlock.Text = "Need player in level"; return false; }
+            if (gcb.IsChecked == true && !current.data.Contains((int)TileType.goal)) { outputBlock.Text = "Need goal in level"; return false; }
+            if (ecb.IsChecked == true && !current.data.Contains((int)TileType.enemy)) { outputBlock.Text = "Need enemy in level"; return false; }
+            if (pcb.IsChecked == true && !current.data.Contains((int)TileType.pickup)) { outputBlock.Text = "Need pickup in level"; return false; }
             return true;
         }
 

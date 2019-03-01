@@ -1,2 +1,3 @@
-tile off screen = deleted
+tile off screen = deleted with WASD, not with resizing
 mouseover to move grid
+block add done with mouse right held down, to delete "Clear" tile must be selected

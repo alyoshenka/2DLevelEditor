@@ -14,12 +14,14 @@ public class Player : MonoBehaviour {
 
     public float speed;
     public float bulletSpeed;
+    public bool canShoot;
 
 	// Use this for initialization
 	void Awake ()
     {
         DontDestroyOnLoad(gameObject);
         rb = GetComponent<Rigidbody2D>();
+        canShoot = false;
     }
 	
 	// Update is called once per frame
@@ -42,11 +44,11 @@ public class Player : MonoBehaviour {
     // shoot towards mouse
     void Shoot()
     {
-        if(! Input.GetKeyDown(KeyCode.Mouse0)) { return; } // if nothing    
+        if(! Input.GetKeyDown(KeyCode.Mouse0) || ! canShoot) { return; } // if nothing    
 
         GameObject current = (GameObject)Resources.Load("Bullet");
         Vector2 dir = new Vector2();
-        dir = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        dir = (UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
         Instantiate(current, transform.position, Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90));
     }
 }

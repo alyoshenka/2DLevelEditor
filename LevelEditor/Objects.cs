@@ -13,7 +13,7 @@ namespace LevelEditor
         enum TileType { empty, player, enemy, wall, floor, pickup, goal, random };
         enum WinCondition { enemies, pickups, goal, time };
 
-        // holds tile data and allows typre conversion given one input
+        // holds tile data and allows type conversion given one input
         struct TileData
         {
             public TileType type;
