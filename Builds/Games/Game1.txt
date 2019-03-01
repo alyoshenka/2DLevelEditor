@@ -1,0 +1,2 @@
+{}
+{"winConds":[2],"isLastLevel":true,"data":[[1,0],[0,6]],"width":2,"height":2}
