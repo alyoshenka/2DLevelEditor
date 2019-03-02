@@ -144,6 +144,8 @@ public class GameManager : MonoBehaviour {
             if (i == 2) { s += "Reach goal\n"; }            
         }
         timer.text = s;
+
+        atGoal = false;
     }
 
         
