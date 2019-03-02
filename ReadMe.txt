@@ -1,5 +1,5 @@
 Instructions for starting LevelEditor + Player
 
-Download Application.zip
+Download App.zip from Assessment folder
 Extract
 Read ReadMe and Documentation
