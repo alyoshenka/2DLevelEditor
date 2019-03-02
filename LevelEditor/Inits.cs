@@ -39,6 +39,7 @@ namespace LevelEditor
             uLevels.SelectionChanged += new SelectionChangedEventHandler(SelectionChangedHandler);
             lLevels.SelectionChanged += new SelectionChangedEventHandler(SelectionChangedHandler);
             key = new Dictionary<int, string>();
+            timeTB.IsEnabled = false;
         }
 
         // initialize level feild

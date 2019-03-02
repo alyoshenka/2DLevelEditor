@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour {
 
     //private void OnTriggerEnter(Collider other)
     //{
-    //    if (other.CompareTag("Bullet"))
+    //    if (other.CompareTag("Player"))
     //    {
     //        // take damage
     //        gameObject.SetActive(false);

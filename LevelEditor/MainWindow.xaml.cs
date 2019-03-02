@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Numerics;
+using System;
 
 // to do
 // dynamically *move* buttons instead of reinitializing them
@@ -113,6 +114,8 @@ namespace LevelEditor
             gcb.IsChecked = level.winConds.Contains(2);
             tcb.IsChecked = level.winConds.Contains(3);
 
+            timeTB.Text = level.timer.ToString();
+
             InitLevel(rows, cols);
         }
               
@@ -178,8 +181,7 @@ namespace LevelEditor
             if (gcb.IsChecked == true) { count++; }
             if (ecb.IsChecked == true) { count++; }
             if (pcb.IsChecked == true) { count++; }
-            if (tcb.IsChecked == true) { count++; }
-            if (count == 0) { ((CheckBox)sender).IsChecked = true; }
+            if (count == 0) { ((CheckBox)sender).IsChecked = true; outputBlock.Text = "Need at least 1 win condition, not including time"; }
         }
         
         // custom dependancy property to get parent
@@ -312,8 +314,19 @@ namespace LevelEditor
             if (pcb.IsChecked == true) { level.winConds.Add((int)WinCondition.pickups); }
             if (tcb.IsChecked == true) { level.winConds.Add((int)WinCondition.time); }
             // next level
-            level.isLastLevel = true; // MODIFY HERE
-
+            if (tcb.IsChecked == true)
+            {
+                try
+                {
+                    int t = Int32.Parse(timeTB.Text);
+                    level.timer = t;
+                }
+                catch
+                {
+                    outputBlock.Text = "Invalid level time";
+                    level.timer = -1;
+                }
+            }
             return level;
         }
 
@@ -342,6 +355,7 @@ namespace LevelEditor
             if (gcb.IsChecked == true && !current.data.Contains((int)TileType.goal)) { outputBlock.Text = "Need goal in level"; return false; }
             if (ecb.IsChecked == true && !current.data.Contains((int)TileType.enemy)) { outputBlock.Text = "Need enemy in level"; return false; }
             if (pcb.IsChecked == true && !current.data.Contains((int)TileType.pickup)) { outputBlock.Text = "Need pickup in level"; return false; }
+            if (current.winConds.Contains(3) && current.timer <= 0) { outputBlock.Text = "Invalid level time"; return false; }
             return true;
         }
 

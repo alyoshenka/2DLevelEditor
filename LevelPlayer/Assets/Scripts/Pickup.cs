@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour {
 
+    GameManager gm;
+
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 	}
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -19,9 +16,14 @@ public class Pickup : MonoBehaviour {
         if (collision.CompareTag("Player"))
         {
             gameObject.SetActive(false);
+            // Destroy(gameObject);
             // add to player stats
 
             // this would be a cool place for dynamic script
+
+            // check for win cond
+            // if(GameObject.FindGameObjectsWithTag("Pickup").Length == 0) { GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().TryToAdvance(); }
+            gm.TryToAdvance();
         }
     }
 }

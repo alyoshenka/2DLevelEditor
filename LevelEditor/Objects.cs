@@ -52,10 +52,10 @@ namespace LevelEditor
         class LevelData
         {
             public List<int> winConds;
-            public bool isLastLevel;
             public int[,] data;
             public int width;
             public int height;
+            public int timer;
         }
     }
 }

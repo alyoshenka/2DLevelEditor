@@ -11,6 +11,8 @@ TagManager:
   - Wall
   - Pickup
   - GameManager
+  - Timer
+  - Health
   layers:
   - Default
   - TransparentFX

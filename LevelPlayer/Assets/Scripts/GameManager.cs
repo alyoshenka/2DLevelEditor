@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 // maually set win cond
 // exe loads from file
@@ -18,6 +19,9 @@ public class GameManager : MonoBehaviour {
     string[] args;
 
     public bool atGoal;
+    Text timer;
+    float seconds;
+    bool counting;
 
     // change how this is done
     GameObject playerObject;
@@ -32,6 +36,7 @@ public class GameManager : MonoBehaviour {
 
         DontDestroyOnLoad(gameObject);
         playerObject = GameObject.FindGameObjectWithTag("Player").gameObject;
+        timer = GameObject.FindGameObjectWithTag("Timer").GetComponent<Text>();
 
         // load file
         levels = new List<LevelData>();
@@ -41,10 +46,21 @@ public class GameManager : MonoBehaviour {
         // get args
         args = System.Environment.GetCommandLineArgs();
         // string[] testArgs = { "Game=/../LevelEditor/bin/Debug/Games/unityTest.txt" };
-        string path = Directory.GetCurrentDirectory() + FindGameArg(args); 
+        // string path = Directory.GetCurrentDirectory() + FindGameArg(args); 
+        string path = Directory.GetCurrentDirectory() + "/Games/Game1.txt"; 
         LoadData(path);
                        
         Cursor.SetCursor(Resources.Load("cursor") as Texture2D, Vector2.zero, CursorMode.Auto);
+    }
+
+    void Update()
+    {
+        if (counting)
+        {
+            seconds -= Time.deltaTime;
+            timer.text = (int)seconds + " seconds";
+            if(seconds <= 0) { SceneManager.LoadScene("Lose"); }
+        }
     }
 
     public void LoadNextLevel()
@@ -108,6 +124,26 @@ public class GameManager : MonoBehaviour {
                 if (current.data[i][j] != 4) { Instantiate(Resources.Load("Floor"), pos, rot); } // always add floor
             }
         }
+
+        string s = "";
+        foreach(int i in current.winConds)
+        {
+            if (i == 3)
+            {
+                seconds = current.timer;
+                counting = true;
+                s = seconds + " seconds\n";
+            }
+            else
+            {
+                counting = false;
+            }
+
+            if (i == 0) { s += "Clear all enemies\n"; }
+            if (i == 1) { s += "Collect all pickups\n"; }
+            if (i == 2) { s += "Reach goal\n"; }            
+        }
+        timer.text = s;
     }
 
         
@@ -120,21 +156,26 @@ public class GameManager : MonoBehaviour {
     // checks if win conditions have been met
     bool CheckWinConds()
     {      
-        bool ret = true;
         for(int i = 0; i < current.winConds.Length; i++) // use key
         {
-            if (current.winConds[i] == 0) { ret = NoEnemies(); }
-            if (current.winConds[i] == 1) { ret = NoPickups(); }
-            if (current.winConds[i] == 2) { ret = atGoal; }
+            if (current.winConds[i] == 0 && ! NoEnemies()) { return false; }
+            if (current.winConds[i] == 1 && ! NoPickups()) { return false; }
+            if (current.winConds[i] == 2 && ! atGoal) { return false; }
         }
-        return ret;
+        return true;
     }
 
     // checks if player has defeated all enemies
-    bool NoEnemies() { return GameObject.FindGameObjectsWithTag("Enemy").Length == 0; }
+    bool NoEnemies() {
+        GameObject[] e = GameObject.FindGameObjectsWithTag("Enemy");
+        return e.Length == 0;
+    }
 
     // checks if player has collected all pickups
-    bool NoPickups() { return GameObject.FindGameObjectsWithTag("Pickup").Length == 0; }
+    bool NoPickups() {
+        GameObject[] e = GameObject.FindGameObjectsWithTag("Pickup");
+        return e.Length == 0;
+    }
 
     // time is different
 

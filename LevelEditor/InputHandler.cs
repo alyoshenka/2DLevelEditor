@@ -22,8 +22,6 @@ namespace LevelEditor
 
             System.Diagnostics.Process.Start(path, game);
 
-            // System.Diagnostics.ProcessStartInfo s = new System.Diagnostics.ProcessStartInfo();
-            // System.Diagnostics.Process.Start(s); // THIS
         }
 
         void SaveLevelButton(object sender, RoutedEventArgs e)
@@ -217,6 +215,13 @@ namespace LevelEditor
             saveText.Text = "new level";
             lvlName.Content = "Level: new level";
             outputBlock.Text = "Clearing data, making blank level";
+        }
+
+        void timeCB(object sender, RoutedEventArgs e)
+        {
+            CheckBox cb = (CheckBox)sender;
+            if (cb.IsChecked == true ) { timeTB.IsEnabled = true;  }
+            if (cb.IsChecked == false) { timeTB.IsEnabled = false; }
         }
     }
 }

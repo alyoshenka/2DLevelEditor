@@ -76,14 +76,16 @@
             <Label Content="Win Conditions" FontSize="30" HorizontalAlignment="Left" Height="58" Margin="22,392,0,0" VerticalAlignment="Top" Width="224"/>
             <CheckBox Style="{StaticResource winCondChecker}" Content="Goal"    Name="gcb" Margin="22,450,0,0" VerticalAlignment="Top"/>
             <CheckBox Style="{StaticResource winCondChecker}" Content="Enemies" Name="ecb" Margin="122,450,0,0" VerticalAlignment="Top"/>
-            <CheckBox Style="{StaticResource winCondChecker}" Content="Pickups" Name="pcb" Margin="241,450,0,0" VerticalAlignment="Top"/>
-            <CheckBox Style="{StaticResource winCondChecker}" Content="Time"    Name="tcb" Margin="341,450,0,0" VerticalAlignment="Top"/>
+            <CheckBox Style="{StaticResource winCondChecker}" Content="Pickups" Name="pcb" Margin="222,450,0,0" VerticalAlignment="Top"/>
+            <CheckBox Style="{StaticResource winCondChecker}" Content="Time"    Name="tcb" Margin="22,486,0,0" VerticalAlignment="Top" Checked="timeCB" Unchecked="timeCB"/>
 
             <Button Content="Open in Unity" Click="OpenInUnity" FontSize="30" HorizontalAlignment="Left" Height="79" Margin="51,597,0,0" VerticalAlignment="Top" Width="348"/>
             <Slider Name="slider" ValueChanged="ResizeLevel" AutoToolTipPlacement="TopLeft" TickPlacement="BottomRight" IsSnapToTickEnabled="True" HorizontalAlignment="Left" Height="48" Margin="794,652,0,0" VerticalAlignment="Top" Width="448"/>
             <TextBlock Name="outputBlock" VerticalAlignment="Top" Background="White" HorizontalAlignment="Left" Height="36" Margin="22,538,0,142" TextWrapping="Wrap" Width="411"/>
 
             <Label Name="lvlName" Content="Level:" FontSize="40" HorizontalAlignment="Left" Height="69" Margin="757,24,0,0" VerticalAlignment="Top" Width="485"/>
+            <TextBox Name="timeTB" MaxLength="3" HorizontalAlignment="Left" Height="20" Margin="79,486,0,0" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="33" RenderTransformOrigin="1.656,2.545"/>
+            <Label Content="seconds" HorizontalAlignment="Left" Height="28" Margin="112,484,0,0" VerticalAlignment="Top" Width="62"/>
 
         </Grid>
     </Viewbox>
